@@ -1,0 +1,79 @@
+script#battery(type='x-template')
+    svg.battery( viewBox='0 0 250 700')
+      defs
+        path#border(d="M0 50c62.5-25 187.5-25 250 0v25c-62.5-25-187.5-25-250 0")
+        path#subBorder(d="M0 73c62.5-25 187.5-25 250 0v6c-62.5-25-187.5-25-250 0")
+        linearGradient#mainGr
+          stop(offset="0" stop-color="#fff")
+          stop(offset="10%" stop-color="#000")
+          stop(offset="13%" stop-color="#fff")
+          stop(offset="20%" stop-color="#fff")
+          stop(offset="60%" stop-color="#000")
+          stop(offset="63%" stop-color="#ddd")
+          stop(offset="80%" stop-color="#ddd")
+          stop(offset="83%" stop-color="#fff")
+          stop(offset="90%" stop-color="#fff")
+          stop(offset="99%" stop-color="#000")
+          stop(offset="1" stop-color="#fff")
+        linearGradient#borderGr //#1c1c1c
+          stop(offset="0" stop-color="#ccc")
+          stop(offset="10%" stop-color="#1c1c1c")
+          stop(offset="12%" stop-color="#ccc")
+          stop(offset="40%" stop-color="#1c1c1c")
+          stop(offset="80%" stop-color="#1c1c1c")
+          stop(offset="90%" stop-color="#ccc")
+          stop(offset="99%" stop-color="#1c1c1c")
+          stop(offset="1" stop-color="#ccc")          
+        linearGradient#borderOppositeGr(href="#borderGr" x1="100%" y1="0" x2="0" y2="0")
+          
+        filter#dim
+          feColorMatrix(type="saturate" values=".95")
+        
+      path#knob(d="M75 23q50-20 100 0v20q-50-20-100 0" fill="url(#borderGr)")
+      
+      rect#bottom(x="0" y="50" width="249" height="40" rx="125" ry="18" fill="#111")
+
+      use(href="#bottom" y="550" v-show="Math.round(fromTop) == bottom")
+  
+      path.battery-inner-section(:d='sectionPath', :fill="innerColor" filter="url(#dim)" v-show="Math.round(fromTop) !== bottom")
+      path#inner(:d='innerPath', :fill="innerColor")
+      
+      path#body.battery-body(d="M0 70c62.5-25 187.5-25 250 0v550c-62.5 25-187.5 25-250 0" fill="url(#mainGr)")
+      
+      use(href="#border" fill="url(#borderGr)")
+      use(href="#subBorder")
+      use(href="#border" y="550" transform="rotate(180, 125, 620)" fill="url(#borderOppositeGr)")
+      use(href="#subBorder" y="548" transform="rotate(180, 125, 620)")
+      
+script#time(type="x-template")
+  .time-box
+    p.label {{label}}
+    .input
+      .controls
+        button.plus(@click="increaseTime", :disabled="disabled") +
+        button.minus(@click="decreaseTime", :disabled="disabled") -
+      input(type="number", :min="min", :max="max", :value="value", :disabled="disabled", @keydown.e.prevent='' @change="onChange($event.target.value)")
+      span min.
+      
+script#play-btn(type="text/x-template")
+  button.play-btn(@click="onClick")
+    svg(viewBox="-1 -1 6 6")
+      polygon(ref="polygon" points="0 0 4 2 4 2 0 4")
+      
+#pomodoro.app 
+  p.title Pomodoro Timer
+  .state
+    transition(name="fade")
+      div.state-text(v-show="isRunning")
+        transition(name="switch" mode="out-in")
+          p(v-if="recess" key="break") Break
+          p(v-else key="session") Session
+          
+        time {{time}}
+    clock-battery(:class="{running: isRunning}", :progress="progress")
+    
+  .timers
+    clock-time(v-model="sessionTime", :min="1", :max="59" label="Session", :disabled="isRunning")
+    clock-time(v-model="breakTime", :min="1", :max="59" label="Break", :disabled="isRunning")
+  play-btn(@click="!isRunning ? run() : stop()", :running="isRunning")
+  
