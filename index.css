@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css?family=Share+Tech+Mono');
+
+:root {
+    --main-bg: rgb(156, 181, 239);
+    --time-box-clr: rgb(47, 43, 78);
+    --time-box-text-clr: rgb(194, 154, 255);
+    --accent: #fff551;
+    --shadow: 0 .1em .3em rgb(0, 0, 0);
+    --time-clr: rgb(240, 248, 255);
+}
+
+$play-btn-width: 2em;
+$pad: .5em;
+
+body {
+  background-color: var(--main-bg);
+  text-align: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body, button, input {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.app {
+  font-size: 6vmin;
+  display: inline-block;
+  background-image: linear-gradient(
+    135deg, 
+    rgb(31, 34, 72) 0, 
+    rgb(90, 77, 142) 100%
+  );
+  border-radius: .1em;
+  box-shadow: var(--shadow);
+  padding: .3em;
+  
+  &::after {
+    $add-size: .3;
+    
+    content: '';
+    position: absolute;
+    width: $play-btn-width + $add-size;
+    height: $play-btn-width + $add-size;
+    background-color: #514783;
+    box-shadow: var(--shadow);
+    transform: translate(-50%, -20%);
+    border-radius: 50%;
+    
+    // negative values are for the shadow to be fully visible
+    clip-path: polygon(-10% 33%, 110% 33%, 110% 115%, -10% 115%);
+  }
+} 
+
+.battery {
+  height: 9em;
+  transition: transform .3s;
+  position: absolute;
+  
+  &.running {
+    transform: translateX(-2.2em);
+  }
+  
+  text {
+    fill: var(--time-box-clr);
+  }
+  
+  &-body {
+    opacity: .3;
+  }
+}
+
+.state {
+  display: flex;
+  justify-content: center;
+  min-height: 9em;
+  
+  time {
+    color: var(--time-clr);
+  }
+  
+  p {
+    color: var(--main-bg); 
+    margin-top: 0;
+  }
+  
+  &-text {
+    align-self: center;
+    flex-basis: 4em;
+    transform: translateX(2.2em);
+  }
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  text-align: center;
+  font-size: 1.5em;
+  border: none;
+  background-color: var(--time-box-clr);
+  color: var(--time-clr);
+  width: 1.5em;
+  
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  }
+}
+
+.time-box {
+  font-size: .6em;
+  background-color: var(--time-box-clr);
+  padding: $pad;
+  color: var(--time-box-text-clr);
+  box-shadow: var(--shadow);
+  border-radius: .1em;
+  
+  &:first-child {
+    margin-right: .5em;
+  }
+  
+  span {
+    align-self: center;
+    margin-left: $pad;
+  }
+}
+
+.title {
+  color: var(--main-bg);
+  margin: .5em 0 0;
+}
+
+.timers {
+  display: flex;
+}
+
+.label {
+  font-size: 1.2em;
+  margin: 0 0 $pad;
+  line-height: 1;
+  color: var(--time-box-text-clr);
+}
+
+.input {
+  display: flex;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  
+  button {
+    color: inherit;
+    border: none;
+    background-color: var(--time-box-clr);
+    font-size: 1em;
+  }
+}
+
+.play-btn {
+  position: absolute;
+  font-size: 1em;
+  left: 50%;
+  width: $play-btn-width;
+  height: $play-btn-width;
+  border-radius: 50%;
+  box-shadow: 0 .2em .2em -.1em #000;
+  border: none;
+  
+  // translateZ(0) to move the element to a separate layer
+  transform: translate(-50%, -20%) translateZ(0);
+  
+  background-color: var(--time-box-clr);
+  z-index: 2;
+  
+  svg {
+    position: absolute;
+    width: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    
+    polygon {
+      fill: none;
+      stroke: rgb(75, 226, 255); 
+      stroke-width: .4;
+    }
+  }
+}
+
+button:not([disabled]) {
+  @media (hover:hover) {
+    &:hover {
+      filter: brightness(1.1);
+    }  
+  }
+  &:active {
+    filter: brightness(.85);
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+input:not([disabled]) {
+  &:hover,
+  &:focus {
+    filter: brightness(1.1);  
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+button[disabled],
+input[disabled] {
+  color: grey;
+}
+
+/*
+======================================================
+                      Animation
+======================================================
+*/
+
+.fade-enter-active,
+.fade-leave-active,
+.switch-enter-active,
+.switch-leave-active {
+  transition: transform .3s, opacity .3s;
+}
+
+.fade-enter, 
+.fade-leave-to {
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.switch-enter,
+.switch-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
